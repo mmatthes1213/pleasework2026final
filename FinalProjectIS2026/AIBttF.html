@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Back to the Future Theme</title>
+  <style>
+    :root {
+      --neon-blue: #00e5ff;
+      --neon-orange: #ff7a00;
+      --neon-pink: #ff2eff;
+      --dark-bg: #0a0a0f;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: radial-gradient(circle, #1a0033, #000);
+      color: white;
+      text-align: center;
+    }
+
+    /* DIV 1: Header */
+    .header {
+      padding: 30px;
+      font-size: 2.5rem;
+      background: linear-gradient(45deg, #ffcc00, #ff3300, #ff00cc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* DIV 2: Time Circuit Box */
+    .time-box {
+      margin: 40px auto;
+      padding: 20px;
+      width: 300px;
+      border: 3px solid red;
+      background: black;
+      box-shadow: 0 0 15px red;
+      font-family: 'Courier New', monospace;
+      color: red;
+    }
+
+    /* DIV 3: Button Section */
+    .controls {
+      margin-top: 40px;
+    }
+
+    .btn {
+      background: black;
+      border: 2px solid var(--neon-blue);
+      color: var(--neon-blue);
+      padding: 12px 25px;
+      margin: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 1rem;
+    }
+
+    .btn:hover {
+      background: var(--neon-blue);
+      color: black;
+      box-shadow: 0 0 20px var(--neon-blue);
+    }
+
+    /* Optional extra styling div */
+    .footer {
+      margin-top: 60px;
+      font-size: 0.9rem;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- DIV 1 -->
+  <div class="header">
+    BACK TO THE FUTURE ⚡
+  </div>
+
+  <!-- DIV 2 -->
+  <div class="time-box">
+    <p>DESTINATION TIME</p>
+    <p>OCT 26 1985</p>
+    <p>01:21 AM</p>
+  </div>
+
+  <!-- DIV 3 -->
+  <div class="controls">
+    <button class="btn">Go 88 MPH</button>
+    <button class="btn">Activate Flux</button>
+  </div>
+
+  <!-- EXTRA DIV -->
+  <div class="footer">
+    Great Scott! ⚡
+  </div>
+
+</body>
+</html>

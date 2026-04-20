@@ -1,0 +1,39 @@
+body {
+    background: linear-gradient(45deg, #0f0c29, #302b63, #24243e);
+    color: #00ffff;
+    font-family: "Courier New", monospace;
+    text-align: center;
+    padding: 20px;
+}
+
+h1 {
+    color: #ff00ff;
+    text-shadow: 0 0 10px #ff00ff;
+}
+
+.box {
+    border: 2px solid #00ffff;
+    padding: 20px;
+    margin: 20px auto;
+    width: 60%;
+    background-color: rgba(0,0,0,0.7);
+    box-shadow: 0 0 20px #00ffff;
+}
+
+button {
+    background: black;
+    color: #00ffff;
+    border: 2px solid #ff00ff;
+    padding: 10px;
+    margin: 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #ff00ff;
+    color: black;
+}
+
+.stats {
+    margin-bottom: 20px;
+}

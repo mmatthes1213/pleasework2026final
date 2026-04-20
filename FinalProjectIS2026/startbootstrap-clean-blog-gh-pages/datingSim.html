@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ring by Spring 💍</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #002E5D;
+  color: white;
+  text-align: center;
+  padding: 30px;
+}
+
+.card {
+  background: white;
+  color: black;
+  width: 500px;
+  margin: auto;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+button {
+  margin: 6px;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.choiceBtn { background: #444; color: white; }
+.date { background: #E91E63; color: white; }
+.rest { background: #9C27B0; color: white; }
+
+#eventBox {
+  display: none;
+  margin-top: 15px;
+  background: #f2f2f2;
+  color: black;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.badge {
+  background: gold;
+  padding: 8px;
+  margin: 5px;
+  display: inline-block;
+  border-radius: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <h1>💍 Ring by Spring Simulator</h1>
+
+  <p>Week: <span id="week">1</span> / 12</p>
+  <p>❤️ Relationship A: <span id="a">0</span> (Athlete 🏈)</p>
+  <p>❤️ Relationship B: <span id="b">0</span> (RM 🙏)</p>
+  <p>❤️ Relationship C: <span id="c">0</span> (Business 💼)</p>
+
+  <p>⚡ Energy: <span id="energy">100</span></p>
+  <p id="status">Start your BYU love story 😌</p>
+
+  <button class="rest" onclick="rest()">Rest 😴</button>
+
+  <!-- EVENT SYSTEM -->
+  <div id="eventBox">
+    <p id="eventText"></p>
+
+    <button onclick="choose(1)" id="opt1">Option 1</button>
+    <button onclick="choose(2)" id="opt2">Option 2</button>
+    <button onclick="choose(3)" id="opt3">Option 3</button>
+  </div>
+
+  <!-- ENDING -->
+  <div id="ending" style="display:none;">
+    <h2>🎉 Ending</h2>
+    <p id="endText"></p>
+    <div id="badges"></div>
+    <button onclick="location.reload()">Play Again 🔄</button>
+  </div>
+
+</div>
+
+<script>
+let week = 1;
+let energy = 100;
+
+let relA = 0; // Athlete
+let relB = 0; // RM
+let relC = 0; // Business
+
+let currentEvent = null;
+
+function update(msg) {
+  document.getElementById("week").innerText = week;
+  document.getElementById("energy").innerText = energy;
+  document.getElementById("a").innerText = relA;
+  document.getElementById("b").innerText = relB;
+  document.getElementById("c").innerText = relC;
+  document.getElementById("status").innerText = msg;
+}
+
+function nextWeek() {
+  week++;
+
+  energy += 10;
+  if (energy > 100) energy = 100;
+
+  // random event chance
+  if (Math.random() < 0.7) {
+    triggerEvent();
+  } else {
+    update("Normal BYU week 😌");
+  }
+
+  checkEnd();
+}
+
+// EVENTS 👀
+function triggerEvent() {
+  document.getElementById("eventBox").style.display = "block";
+
+  let events = [
+    {
+      text: "🏈 The Athlete texts: 'you trying to hang after practice?'",
+      options: [
+        "Go on a sporty date 🏈",
+        "Be polite but busy 🙂",
+        "Ignore 😬"
+      ],
+      effects: [
+        () => relA += 15,
+        () => relA += 3,
+        () => relA -= 5
+      ]
+    },
+    {
+      text: "🙏 The RM asks you on a study + devotional date",
+      options: [
+        "Go study & pray 📖",
+        "Reschedule 😬",
+        "Ignore",
+      ],
+      effects: [
+        () => relB += 15,
+        () => relB += 2,
+        () => relB -= 5
+      ]
+    },
+    {
+      text: "💼 Business major invites you to a structured study date",
+      options: [
+        "Accept (very productive) 📊",
+        "Say maybe later",
+        "Ghost 😬"
+      ],
+      effects: [
+        () => relC += 15,
+        () => relC += 3,
+        () => relC -= 5
+      ]
+    }
+  ];
+
+  currentEvent = events[Math.floor(Math.random() * events.length)];
+
+  document.getElementById("eventText").innerText = currentEvent.text;
+  document.getElementById("opt1").innerText = currentEvent.options[0];
+  document.getElementById("opt2").innerText = currentEvent.options[1];
+  document.getElementById("opt3").innerText = currentEvent.options[2];
+}
+
+// CHOICES
+function choose(n) {
+  currentEvent.effects[n - 1]();
+
+  energy -= 10;
+  document.getElementById("eventBox").style.display = "none";
+
+  update("You made a choice 💕");
+  nextWeek();
+}
+
+// REST
+function rest() {
+  energy += 40;
+  if (energy > 100) energy = 100;
+  update("You rested 😴");
+  nextWeek();
+}
+
+// ENDING
+function checkEnd() {
+  if (energy <= 0) {
+    end("💀 Burned out before love happened", ["😴 Exhausted"]);
+  }
+
+  if (week >= 12) {
+    let max = Math.max(relA, relB, relC);
+
+    if (max >= 80) {
+      end("💍 Ring by Spring achieved!", ["💍 Engaged", winner()]);
+    } else if (max >= 40) {
+      end("🥤 Almost had a BYU love story", ["📱 Talking phase"]);
+    } else {
+      end("🧘 Single era unlocked", ["📚 Focused"]);
+    }
+  }
+}
+
+function winner() {
+  if (relA >= relB && relA >= relC) return "🏈 Athlete";
+  if (relB >= relA && relB >= relC) return "🙏 RM";
+  return "💼 Business Major";
+}
+
+function end(title, badges) {
+  document.querySelectorAll("button").forEach(b => b.style.display = "none");
+
+  document.getElementById("ending").style.display = "block";
+  document.getElementById("endText").innerText = title;
+
+  let html = "";
+  badges.forEach(b => html += `<div class="badge">${b}</div>`);
+
+  document.getElementById("badges").innerHTML = html;
+}
+
+update("Your BYU love story begins 💕");
+nextWeek();
+</script>
+
+</body>
+</html>

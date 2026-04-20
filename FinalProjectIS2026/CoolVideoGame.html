@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>80s BYU Simulator</title>
+    <!--<link rel="stylesheet" href="videogame.css">-->
+    <link rel="stylesheet" href="bulletinboard.css">
+    <link rel="stylesheet" href="videogame.css">
+</head>
+<div class="nav">
+            <ul>
+                <li><a href="startbootstrap-clean-blog-gh-pages/">My Resume</a></li>
+                <li><a href="CoolVideoGame.html">Cool Video Game</a></li>
+                <li><a href="fromscratchpage.html">From Scratch Page</a></li>
+            </ul>
+</div>
+<body>
+
+<h1>🎮 80s BYU Simulator 🎮</h1>
+
+<div class="box stats">
+    <p>📅 Week: <span id="week">1</span> / 15</p>
+    <p>📚 GPA: <span id="gpa">3.0</span></p>
+    <p>💃 Social: <span id="social">50</span></p>
+    <p>🙏 Spirit: <span id="spirit">50</span></p>
+</div>
+
+<div class="box">
+    <p id="event">Welcome to BYU. Survive 15 weeks.</p>
+
+    <div id="buttons">
+        <button onclick="study()">Study</button>
+        <button onclick="party()">Dance Party</button>
+        <button onclick="devotional()">Devotional</button>
+        <button onclick="date()">Go on a Date</button>
+    </div>
+
+    <button onclick="restart()" id="restart" style="display:none;">Restart Semester</button>
+</div>
+
+<script>
+let week = 1;
+let gpa = 3.0;
+let social = 50;
+let spirit = 50;
+let gameOver = false;
+
+function updateStats() {
+    document.getElementById("week").innerText = week;
+    document.getElementById("gpa").innerText = gpa.toFixed(2);
+    document.getElementById("social").innerText = social;
+    document.getElementById("spirit").innerText = spirit;
+}
+
+function randomEvent() {
+    let events = [
+        "You saw your crush at the Creamery 👀",
+        "A surprise pop quiz hit you 💀",
+        "You got asked your major again 😭",
+        "You slow danced to synth music 💃",
+        "You fell asleep in the library 😴"
+    ];
+    return events[Math.floor(Math.random() * events.length)];
+}
+
+function nextWeek() {
+    week++;
+
+    // small passive decay / pressure system
+    social -= 2;
+    spirit -= 1;
+
+    if (gpa > 4) gpa = 4;
+    if (gpa < 0) gpa = 0;
+
+    checkEnd();
+    updateStats();
+}
+
+function checkEnd() {
+    if (week > 15 && !gameOver) {
+        gameOver = true;
+
+        document.getElementById("buttons").style.display = "none";
+        document.getElementById("restart").style.display = "block";
+
+        let outcome = "";
+
+        if (gpa >= 3.3 && spirit >= 60) {
+            outcome = "🏆 YOU WIN: You thrived at BYU in the 80s. Ring by spring energy achieved.";
+        } 
+        else if (gpa < 2.5) {
+            outcome = "📉 YOU LOSE: Academic probation hit you harder than a pop quiz.";
+        }
+        else if (spirit < 30) {
+            outcome = "😵 YOU LOSE: You survived academically but spiritually... not so much.";
+        }
+        else {
+            outcome = "😐 YOU SURVIVED: Average BYU experience. Nothing legendary, nothing disastrous.";
+        }
+
+        document.getElementById("event").innerText = outcome;
+    }
+}
+
+function study() {
+    if (gameOver) return;
+
+    gpa += 0.15;
+    social -= 5;
+    spirit += 2;
+
+    document.getElementById("event").innerText = "You studied hard. " + randomEvent();
+    nextWeek();
+}
+
+function party() {
+    if (gameOver) return;
+
+    social += 10;
+    gpa -= 0.15;
+    spirit -= 5;
+
+    document.getElementById("event").innerText = "You went to an 80s dance party. " + randomEvent();
+    nextWeek();
+}
+
+function devotional() {
+    if (gameOver) return;
+
+    spirit += 10;
+    social -= 2;
+
+    document.getElementById("event").innerText = "You attended devotional. " + randomEvent();
+    nextWeek();
+}
+
+function date() {
+    if (gameOver) return;
+
+    social += 8;
+    spirit += 3;
+    gpa -= 0.05;
+
+    document.getElementById("event").innerText = "You went on a date. Ring by spring?? " + randomEvent();
+    nextWeek();
+}
+
+function restart() {
+    week = 1;
+    gpa = 3.0;
+    social = 50;
+    spirit = 50;
+    gameOver = false;
+
+    document.getElementById("buttons").style.display = "block";
+    document.getElementById("restart").style.display = "none";
+
+    document.getElementById("event").innerText = "New semester begins. Don't mess it up.";
+
+    updateStats();
+}
+</script>
+
+</body>
+</html>

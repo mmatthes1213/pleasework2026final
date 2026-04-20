@@ -1,0 +1,69 @@
+:root {
+  --neon-blue: #00e5ff;
+  --neon-pink: #ff2eff;
+  --neon-orange: #ff7a00;
+  --dark-bg: #0a0a0f;
+  --glow-yellow: #ffd500;
+}
+
+body{
+  background: radial-gradient(circle at center, #1a0033, #000000);
+  color: white;
+  font-family: 'Orbitron', sans-serif;
+  overflow-x: hidden;
+}
+
+.neon-text {
+  color: var(--neon-orange);
+  text-shadow:
+    0 0 5px var(--neon-orange),
+    0 0 10px var(--neon-pink),
+    0 0 20px var(--neon-blue);
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.title{
+  font-size: 3rem;
+  background: linear-gradient(45deg, #ffcc00, #ff3300, #ff00cc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.time-display {
+  font-family: 'Courier New', monospace;
+  color: red;
+  background: black;
+  padding: 10px;
+  border: 2px solid red;
+  box-shadow: 0 0 10px red;
+}
+
+.button {
+  background: black;
+  border: 2px solid var(--neon-blue);
+  color: var(--neon-blue);
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.button:hover {
+  background: var(--neon-blue);
+  color: black;
+  box-shadow: 0 0 15px var(--neon-blue);
+}
+
+@keyframes lightning {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.lightning {
+  position: absolute;
+  width: 2px;
+  height: 100vh;
+  background: white;
+  animation: lightning 0.2s linear infinite;
+}

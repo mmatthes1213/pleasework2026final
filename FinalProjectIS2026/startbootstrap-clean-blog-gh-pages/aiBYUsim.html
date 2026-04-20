@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BYU Campus Simulator 🎓</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #002E5D;
+  color: white;
+  text-align: center;
+  padding: 30px;
+}
+
+.game-box {
+  background: white;
+  color: black;
+  padding: 20px;
+  border-radius: 15px;
+  width: 440px;
+  margin: auto;
+}
+
+button {
+  margin: 6px;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.study { background: #4CAF50; color: white; }
+.social { background: #2196F3; color: white; }
+.rest { background: #9C27B0; color: white; }
+.date { background: #E91E63; color: white; }
+.party { background: #FF9800; color: white; }
+
+button:hover { opacity: 0.85; }
+
+#badges { margin-top: 15px; }
+
+.badge {
+  display: inline-block;
+  background: gold;
+  color: black;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+/* TEXTING UI */
+#textBox {
+  display: none;
+  background: #f0f0f0;
+  color: black;
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="game-box">
+  <h1>🎓 BYU Simulator</h1>
+  <p id="day">Week: 1</p>
+
+  <p>📚 GPA: <span id="gpa">3.5</span></p>
+  <p>⚡ Energy: <span id="energy">100</span></p>
+  <p>⛪ Spiritual: <span id="spiritual">50</span></p>
+  <p>💖 Relationship: <span id="relationship">0</span></p>
+
+  <p id="status">Welcome to Provo 😌</p>
+
+  <button class="study" onclick="study()">Study @ HBLL 📚</button>
+  <button class="social" onclick="ward()">Ward ⛪</button>
+  <button class="rest" onclick="sleep()">Sleep 😴</button>
+  <button class="date" onclick="date()">Date 💕</button>
+  <button class="party" onclick="party()">Party 🎉</button>
+
+  <!-- TEXTING SYSTEM -->
+  <div id="textBox">
+    <h3>📱 Messages</h3>
+    <p id="textMessage"></p>
+
+    <button onclick="reply(1)">Flirt 😏</button>
+    <button onclick="reply(2)">Be normal 🙂</button>
+    <button onclick="reply(3)">Ghost 😬</button>
+  </div>
+
+  <!-- ENDING SCREEN -->
+  <div id="endingScreen" style="display:none; margin-top:20px;">
+    <h2>🎉 Semester Results</h2>
+    <p id="endingText"></p>
+    <div id="badges"></div>
+    <button onclick="location.reload()">Play Again 🔄</button>
+  </div>
+</div>
+
+<script>
+let week = 1;
+let gpa = 3.5;
+let energy = 100;
+let spiritual = 50;
+let relationship = 0;
+let partner = false;
+
+// texting
+let texting = false;
+let currentText = "";
+
+const MAX_WEEKS = 15;
+
+function update(msg) {
+  document.getElementById("day").innerText = "Week: " + week;
+  document.getElementById("gpa").innerText = gpa.toFixed(2);
+  document.getElementById("energy").innerText = energy;
+  document.getElementById("spiritual").innerText = spiritual;
+  document.getElementById("relationship").innerText = relationship;
+  document.getElementById("status").innerText = msg;
+}
+
+function nextWeek() {
+  week++;
+
+  if (week > MAX_WEEKS) {
+    endSemester();
+    return;
+  }
+
+  // passive recovery
+  energy += 10;
+  if (energy > 100) energy = 100;
+
+  // finals
+  if (week === 15) {
+    gpa += 0.2;
+    if (gpa > 4.0) gpa = 4.0;
+    energy -= 20;
+    update("📚 Finals week… survive.");
+  }
+
+  // RANDOM TRIALS
+  let rand = Math.random();
+
+  if (rand < 0.2) {
+    gpa += 0.1;
+    update("Pop quiz clutch 💅");
+  } else if (rand < 0.4) {
+    gpa -= 0.1;
+    update("Group project disaster 😭");
+  } else if (rand < 0.6) {
+    relationship += 10;
+    update("Late night convo 💕");
+  } else if (rand < 0.8) {
+    energy -= 10;
+    update("All-nighter 💀");
+  } else {
+    spiritual += 10;
+    update("Spiritual high 🙏");
+  }
+
+  // TEXTING TRIGGER
+  if (!texting && partner && Math.random() < 0.4) {
+    triggerText();
+  }
+
+  checkGame();
+}
+
+// ACTIONS
+function study() {
+  if (texting) return;
+
+  gpa += 0.08;
+  if (gpa > 4.0) gpa = 4.0;
+  energy -= 12;
+  update("HBLL grind 📚");
+  nextWeek();
+}
+
+function ward() {
+  if (texting) return;
+
+  spiritual += 10;
+  energy -= 6;
+
+  if (!partner && Math.random() < 0.6) {
+    partner = true;
+    update("👀 You met someone...");
+  } else {
+    update("Ward vibes ⛪");
+  }
+
+  nextWeek();
+}
+
+function sleep() {
+  if (texting) return;
+
+  energy += 35;
+  if (energy > 100) energy = 100;
+  update("You slept 😴");
+  nextWeek();
+}
+
+function party() {
+  if (texting) return;
+
+  energy -= 15;
+  relationship += 10;
+
+  let chance = Math.random();
+
+  if (chance < 0.3) {
+    gpa -= 0.1;
+    update("Party too hard 😬");
+  } else if (chance < 0.6) {
+    update("Elite night 🎉");
+  } else {
+    relationship += 10;
+    update("Met someone 👀");
+  }
+
+  nextWeek();
+}
+
+function date() {
+  if (texting) return;
+
+  if (!partner) {
+    update("No one to date 😬");
+    return;
+  }
+
+  relationship += 15;
+  energy -= 8;
+
+  if (relationship >= 100) {
+    showEngagementEnding();
+    return;
+  }
+
+  update("Creamery date 🥤💕");
+  nextWeek();
+}
+
+// TEXTING SYSTEM
+function triggerText() {
+  texting = true;
+  document.getElementById("textBox").style.display = "block";
+
+  let texts = [
+    "hey what are you doing tonight?",
+    "lowkey miss you 😶",
+    "want to get swig?",
+    "did you do the reading lol",
+    "we should hang soon 👀"
+  ];
+
+  currentText = texts[Math.floor(Math.random() * texts.length)];
+  document.getElementById("textMessage").innerText = currentText;
+}
+
+function reply(choice) {
+  let msg = "";
+
+  if (choice === 1) {
+    relationship += 12;
+    msg = "😏 Smooth...";
+  } else if (choice === 2) {
+    relationship += 5;
+    msg = "🙂 Solid response";
+  } else {
+    relationship -= 10;
+    msg = "😬 Left on read...";
+  }
+
+  document.getElementById("textMessage").innerText = msg;
+
+  setTimeout(() => {
+    document.getElementById("textBox").style.display = "none";
+    texting = false;
+  }, 1200);
+}
+
+// GAME STATES
+function checkGame() {
+  if (energy <= 0) {
+    alert("Burnout 💀");
+    location.reload();
+  }
+  if (gpa < 2.3) {
+    alert("Academic probation 😭");
+    location.reload();
+  }
+  if (spiritual < 5) {
+    alert("Ghosted ward 😬");
+    location.reload();
+  }
+}
+
+function showEngagementEnding() {
+  hideButtons();
+
+  document.getElementById("endingText").innerText =
+    "💍 Ring by Spring achieved.";
+
+  document.getElementById("badges").innerHTML =
+    `<div class="badge">💍 Champion</div>`;
+
+  document.getElementById("endingScreen").style.display = "block";
+}
+
+function endSemester() {
+  hideButtons();
+
+  let badges = [];
+
+  if (gpa >= 3.9) badges.push("🎓 Academic Weapon");
+  else if (gpa >= 3.5) badges.push("📘 Solid Student");
+  else badges.push("🫠 Survivor");
+
+  if (relationship >= 80) badges.push("💖 Almost Engaged");
+  else if (relationship > 0) badges.push("🥤 Creamery Regular");
+  else badges.push("🧘 Independent");
+
+  if (spiritual >= 80) badges.push("🙏 Celestial Tier");
+
+  if (energy > 70) badges.push("⚡ Well Rested");
+  else if (energy < 30) badges.push("💀 Sleep Deprived");
+
+  document.getElementById("endingText").innerText = "Semester complete 🎉";
+
+  let html = "";
+  badges.forEach(b => html += `<div class="badge">${b}</div>`);
+  document.getElementById("badges").innerHTML = html;
+
+  document.getElementById("endingScreen").style.display = "block";
+}
+
+function hideButtons() {
+  document.querySelectorAll("button").forEach(btn => btn.style.display = "none");
+}
+
+update("Texting era unlocked 📱😤");
+</script>
+
+</body>
+</html>

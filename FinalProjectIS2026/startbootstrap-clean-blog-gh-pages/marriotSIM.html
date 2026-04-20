@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Marriott Simulator 💼</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #002E5D;
+  color: white;
+  text-align: center;
+  padding: 30px;
+}
+
+.card {
+  background: white;
+  color: black;
+  width: 520px;
+  margin: auto;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+button {
+  margin: 6px;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.study { background: #4CAF50; color: white; }
+.network { background: #2196F3; color: white; }
+.intern { background: #FF9800; color: white; }
+.rest { background: #9C27B0; color: white; }
+
+#eventBox, #linkedinBox {
+  display: none;
+  margin-top: 15px;
+  background: #f2f2f2;
+  color: black;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.badge {
+  background: gold;
+  padding: 8px;
+  margin: 5px;
+  display: inline-block;
+  border-radius: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h1>💼 Marriott Simulator</h1>
+
+<p>Week: <span id="week">1</span> / 12</p>
+
+<p>📊 GPA: <span id="gpa">3.5</span></p>
+<p>🤝 Network: <span id="network">0</span></p>
+<p>💰 Intern: <span id="intern">0</span></p>
+<p>⚡ Energy: <span id="energy">100</span></p>
+
+<p id="status">Start</p>
+
+<button class="study" onclick="study()">Study 📚</button>
+<button class="network" onclick="networking()">Network 🤝</button>
+<button class="intern" onclick="intern()">Intern 💼</button>
+<button class="rest" onclick="rest()">Rest 😴</button>
+
+<!-- LINKEDIN -->
+<div id="linkedinBox">
+  <h3>💼 LinkedIn Opportunity</h3>
+  <p id="linkedinMsg"></p>
+
+  <button onclick="linkedinChoice(1)">Message 🤝</button>
+  <button onclick="linkedinChoice(2)">Connect 👋</button>
+  <button onclick="linkedinChoice(3)">Ignore 😬</button>
+</div>
+
+<!-- EVENT -->
+<div id="eventBox">
+  <p id="eventText"></p>
+  <button onclick="choice(1)">1</button>
+  <button onclick="choice(2)">2</button>
+  <button onclick="choice(3)">3</button>
+</div>
+
+<!-- END -->
+<div id="ending" style="display:none;">
+  <h2>End</h2>
+  <p id="endText"></p>
+  <div id="badges"></div>
+  <button onclick="location.reload()">Restart</button>
+</div>
+
+</div>
+
+<script>
+let week = 1;
+let gpa = 3.5;
+let network = 0;
+let intern = 0;
+let energy = 100;
+
+let currentEvent = null;
+let paused = false; // ⭐ FIX: one system controls ALL popups
+
+// UPDATE
+function update(msg) {
+  document.getElementById("week").innerText = week;
+  document.getElementById("gpa").innerText = gpa.toFixed(2);
+  document.getElementById("network").innerText = network;
+  document.getElementById("intern").innerText = intern;
+  document.getElementById("energy").innerText = energy;
+  document.getElementById("status").innerText = msg;
+}
+
+// MAIN LOOP
+function nextWeek() {
+  if (paused) return;
+
+  week++;
+  energy = Math.min(100, energy + 10);
+
+  let r = Math.random();
+
+  if (r < 0.4) {
+    triggerEvent();
+    return;
+  }
+
+  update("Normal week 😌");
+  checkEnd();
+}
+
+/* ---------------- LINKEDIN ---------------- */
+
+function triggerLinkedIn() {
+  paused = true;
+  document.getElementById("linkedinBox").style.display = "block";
+
+  let people = [
+    "Goldman Sachs recruiter 💼",
+    "Deloitte HR 🤝",
+    "Tech founder 🚀",
+    "BYU alum 📊"
+  ];
+
+  document.getElementById("linkedinMsg").innerText =
+    people[Math.floor(Math.random() * people.length)] + " viewed your profile.";
+}
+
+function linkedinChoice(n) {
+  if (n === 1) network += 20;
+  if (n === 2) network += 10;
+  if (n === 3) network -= 5;
+
+  document.getElementById("linkedinBox").style.display = "none";
+  paused = false;
+
+  update("LinkedIn resolved 💼");
+
+  setTimeout(nextWeek, 300);
+}
+
+/* ---------------- EVENTS ---------------- */
+
+function triggerEvent() {
+  paused = true;
+  document.getElementById("eventBox").style.display = "block";
+
+  let events = [
+    {
+      text: "Career fair 👀",
+      opts: ["Talk", "Browse", "Avoid"],
+      fx: [() => network += 15, () => network += 5, () => network -= 5]
+    },
+    {
+      text: "Group project 😭",
+      opts: ["Lead", "Do work", "Ignore"],
+      fx: [() => gpa += 0.1, () => gpa += 0.05, () => gpa -= 0.1]
+    }
+  ];
+
+  currentEvent = events[Math.floor(Math.random() * events.length)];
+
+  document.getElementById("eventText").innerText = currentEvent.text;
+
+  let buttons = document.querySelectorAll("#eventBox button");
+  buttons[0].innerText = currentEvent.opts[0];
+  buttons[1].innerText = currentEvent.opts[1];
+  buttons[2].innerText = currentEvent.opts[2];
+}
+
+function choice(n) {
+  currentEvent.fx[n - 1]();
+
+  document.getElementById("eventBox").style.display = "none";
+  paused = false;
+
+  update("Decision made 💼");
+
+  setTimeout(nextWeek, 300);
+}
+
+/* ---------------- ACTIONS ---------------- */
+
+function study() {
+  if (paused) return;
+  gpa = Math.min(4, gpa + 0.1);
+  energy -= 10;
+  update("Studying 📚");
+  nextWeek();
+}
+
+function networking() {
+  if (paused) return;
+  network += 10;
+  energy -= 8;
+
+  // ⭐ FIX: LinkedIn now properly triggers here instead of breaking flow
+  if (Math.random() < 0.5) {
+    triggerLinkedIn();
+    return;
+  }
+
+  update("Networking 🤝");
+  nextWeek();
+}
+
+function intern() {
+  if (paused) return;
+  intern += 12;
+  energy -= 12;
+  update("Intern work 💼");
+  nextWeek();
+}
+
+function rest() {
+  if (paused) return;
+  energy = Math.min(100, energy + 40);
+  update("Rest 😴");
+  nextWeek();
+}
+
+/* ---------------- END ---------------- */
+
+function checkEnd() {
+  if (energy <= 0) {
+    end("Burnout 💀", ["😴"]);
+  }
+
+  if (week >= 12) {
+    end("Semester Complete 💼", ["Done"]);
+  }
+}
+
+function end(t, b) {
+  document.querySelectorAll("button").forEach(x => x.style.display = "none");
+  document.getElementById("ending").style.display = "block";
+  document.getElementById("endText").innerText = t;
+
+  document.getElementById("badges").innerHTML =
+    b.map(x => `<div class="badge">${x}</div>`).join("");
+}
+
+update("Marriott Simulator Ready 💼");
+</script>
+
+</body>
+</html>
